@@ -1,0 +1,811 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Time - Conversor de Segundos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #ffd166;
+        }
+        
+        .header {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4.5rem;
+            color: #ef476f;
+            text-shadow: 4px 4px 0 #ffd166;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #118ab2;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .converter-area {
+            background: linear-gradient(45deg, #06d6a0, #118ab2);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 5px solid #ffd166;
+        }
+        
+        .result-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            font-family: 'Fredoka One', cursive;
+            margin: 20px 0;
+            letter-spacing: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .time-input {
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            width: 300px;
+            max-width: 100%;
+            text-align: center;
+            background: #ffd166;
+            color: #333;
+            box-shadow: 0 4px 0 #e6b955;
+            font-family: 'Fredoka One', cursive;
+            outline: none;
+        }
+        
+        .time-input::placeholder {
+            color: #888;
+        }
+        
+        .action-btn {
+            background: #ef476f;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.6rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px 0 #d43d62;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            width: 300px;
+            max-width: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #d43d62;
+            background: #ff5c84;
+        }
+        
+        .explanation {
+            background: #ffd166;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .explanation h3 {
+            color: #ef476f;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .decorations {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 30px 0;
+        }
+        
+        .decoration {
+            width: 80px;
+            height: 80px;
+            background: #ffd166;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 1.3rem;
+            color: #333;
+            background: #ffd166;
+            border-radius: 20px;
+            width: 100%;
+            font-weight: 700;
+        }
+        
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+        }
+        
+        .bubble:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .bubble:nth-child(2) {
+            left: 20%;
+            animation-delay: 2s;
+            width: 35px;
+            height: 35px;
+        }
+        
+        .bubble:nth-child(3) {
+            left: 35%;
+            animation-delay: 4s;
+        }
+        
+        .bubble:nth-child(4) {
+            left: 50%;
+            animation-delay: 0s;
+            width: 25px;
+            height: 25px;
+        }
+        
+        .bubble:nth-child(5) {
+            left: 65%;
+            animation-delay: 3s;
+        }
+        
+        .bubble:nth-child(6) {
+            left: 80%;
+            animation-delay: 6s;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .bubble:nth-child(7) {
+            left: 90%;
+            animation-delay: 8s;
+            width: 15px;
+            height: 15px;
+        }
+        
+        @keyframes rise {
+            0% {
+                bottom: -100px;
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(100px);
+            }
+            100% {
+                bottom: 100%;
+                transform: translateX(-100px);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 3rem;
+            }
+            .result-display {
+                font-size: 3rem;
+            }
+            .time-input {
+                width: 100%;
+            }
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>TEMPO TIME</h1>
+            <div class="subtitle">Transforme segundos em horas!</div>
+        </div>
+        
+        <div class="converter-area">
+            <div class="result-display" id="tempo">00:00:00</div>
+        </div>
+        
+        <div class="input-area">
+            <input type="number" class="time-input" id="valorInput" placeholder="Digite segundos" min="0" step="1">
+            <button class="action-btn" onclick="hora()">CONVERTER</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>Como funciona?</h3>
+            <p>Digite qualquer número de segundos no campo acima e clique em "CONVERTER" para ver o resultado em horas, minutos e segundos!</p>
+            <p>Exemplo: 3665 segundos = 1 hora, 1 minuto e 5 segundos</p>
+        </div>
+        
+        <div class="decorations">
+            <div class="decoration">⏰</div>
+            <div class="decoration">🕒</div>
+            <div class="decoration">⏱️</div>
+        </div>
+        
+        <div class="footer">
+            Criado por aluno do curso de programação do Mídia Jataí
+        </div>
+    </div>
+
+    <script>
+        function hora() {
+            // Pegar o valor do input
+            const duracao = document.getElementById('valorInput').value;
+            
+            // Validar se é um número positivo
+            if (!duracao || isNaN(duracao) || duracao < 0) {
+                document.getElementById('tempo').textContent = "Digite um número válido!";
+                document.getElementById('tempo').style.color = "#ffd166";
+                return;
+            }
+            
+            // Converter para números inteiros
+            const totalSegundos = parseInt(duracao);
+            
+            // Calcular horas, minutos e segundos
+            const horas = Math.floor(totalSegundos / 3600);
+            const minutos = Math.floor((totalSegundos % 3600) / 60);
+            const segundos = totalSegundos % 60;
+            
+            // Formatando para dois dígitos
+            const horasFormatadas = String(horas).padStart(2, '0');
+            const minutosFormatados = String(minutos).padStart(2, '0');
+            const segundosFormatados = String(segundos).padStart(2, '0');
+            
+            // Criar o resultado formatado
+            const duracaoTempo = `${horasFormatadas}:${minutosFormatados}:${segundosFormatados}`;
+            
+            // Exibir o resultado
+            document.getElementById('tempo').textContent = duracaoTempo;
+            document.getElementById('tempo').style.color = "#ffffff";
+            
+            // Animação de confete
+            createConfetti();
+        }
+        
+        // Permitir Enter para enviar
+        document.getElementById('valorInput').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                hora();
+            }
+        });
+        
+        // Função para criar efeito de confete
+        function createConfetti() {
+            const confettiCount = 100;
+            const container = document.querySelector('.converter-area');
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-20px';
+                confetti.style.opacity = '0.8';
+                confetti.style.zIndex = '100';
+                
+                container.appendChild(confetti);
+                
+                // Animação
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 0.8 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 2000 + Math.random() * 3000,
+                    easing: 'cubic-bezier(0,0.9,0.57,1)'
+                });
+                
+                // Remover após animação
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        function getRandomColor() {
+            const colors = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#073b4c'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Inicializar com um exemplo
+        document.getElementById('valorInput').value = "3665";
+        hora();
+    </script>
+</body>
+</html><html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Time - Conversor de Segundos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #ffd166;
+        }
+        
+        .header {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4.5rem;
+            color: #ef476f;
+            text-shadow: 4px 4px 0 #ffd166;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #118ab2;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .converter-area {
+            background: linear-gradient(45deg, #06d6a0, #118ab2);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 5px solid #ffd166;
+        }
+        
+        .result-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            font-family: 'Fredoka One', cursive;
+            margin: 20px 0;
+            letter-spacing: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .time-input {
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            width: 300px;
+            max-width: 100%;
+            text-align: center;
+            background: #ffd166;
+            color: #333;
+            box-shadow: 0 4px 0 #e6b955;
+            font-family: 'Fredoka One', cursive;
+            outline: none;
+        }
+        
+        .time-input::placeholder {
+            color: #888;
+        }
+        
+        .action-btn {
+            background: #ef476f;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.6rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px 0 #d43d62;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            width: 300px;
+            max-width: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #d43d62;
+            background: #ff5c84;
+        }
+        
+        .explanation {
+            background: #ffd166;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .explanation h3 {
+            color: #ef476f;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .decorations {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 30px 0;
+        }
+        
+        .decoration {
+            width: 80px;
+            height: 80px;
+            background: #ffd166;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 1.3rem;
+            color: #333;
+            background: #ffd166;
+            border-radius: 20px;
+            width: 100%;
+            font-weight: 700;
+        }
+        
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+        }
+        
+        .bubble:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .bubble:nth-child(2) {
+            left: 20%;
+            animation-delay: 2s;
+            width: 35px;
+            height: 35px;
+        }
+        
+        .bubble:nth-child(3) {
+            left: 35%;
+            animation-delay: 4s;
+        }
+        
+        .bubble:nth-child(4) {
+            left: 50%;
+            animation-delay: 0s;
+            width: 25px;
+            height: 25px;
+        }
+        
+        .bubble:nth-child(5) {
+            left: 65%;
+            animation-delay: 3s;
+        }
+        
+        .bubble:nth-child(6) {
+            left: 80%;
+            animation-delay: 6s;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .bubble:nth-child(7) {
+            left: 90%;
+            animation-delay: 8s;
+            width: 15px;
+            height: 15px;
+        }
+        
+        @keyframes rise {
+            0% {
+                bottom: -100px;
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(100px);
+            }
+            100% {
+                bottom: 100%;
+                transform: translateX(-100px);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 3rem;
+            }
+            .result-display {
+                font-size: 3rem;
+            }
+            .time-input {
+                width: 100%;
+            }
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>TEMPO TIME</h1>
+            <div class="subtitle">Transforme segundos em horas!</div>
+        </div>
+        
+        <div class="converter-area">
+            <div class="result-display" id="tempo">00:00:00</div>
+        </div>
+        
+        <div class="input-area">
+            <input type="number" class="time-input" id="valorInput" placeholder="Digite segundos" min="0" step="1">
+            <button class="action-btn" onclick="hora()">CONVERTER</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>Como funciona?</h3>
+            <p>Digite qualquer número de segundos no campo acima e clique em "CONVERTER" para ver o resultado em horas, minutos e segundos!</p>
+            <p>Exemplo: 3665 segundos = 1 hora, 1 minuto e 5 segundos</p>
+        </div>
+        
+        <div class="decorations">
+            <div class="decoration">⏰</div>
+            <div class="decoration">🕒</div>
+            <div class="decoration">⏱️</div>
+        </div>
+        
+        <div class="footer">
+            Criado por aluno do curso de programação do Mídia Jataí
+        </div>
+    </div>
+
+    <script>
+        function hora() {
+            // Pegar o valor do input
+            const duracao = document.getElementById('valorInput').value;
+            
+            // Validar se é um número positivo
+            if (!duracao || isNaN(duracao) || duracao < 0) {
+                document.getElementById('tempo').textContent = "Digite um número válido!";
+                document.getElementById('tempo').style.color = "#ffd166";
+                return;
+            }
+            
+            // Converter para números inteiros
+            const totalSegundos = parseInt(duracao);
+            
+            // Calcular horas, minutos e segundos
+            const horas = Math.floor(totalSegundos / 3600);
+            const minutos = Math.floor((totalSegundos % 3600) / 60);
+            const segundos = totalSegundos % 60;
+            
+            // Formatando para dois dígitos
+            const horasFormatadas = String(horas).padStart(2, '0');
+            const minutosFormatados = String(minutos).padStart(2, '0');
+            const segundosFormatados = String(segundos).padStart(2, '0');
+            
+            // Criar o resultado formatado
+            const duracaoTempo = `${horasFormatadas}:${minutosFormatados}:${segundosFormatados}`;
+            
+            // Exibir o resultado
+            document.getElementById('tempo').textContent = duracaoTempo;
+            document.getElementById('tempo').style.color = "#ffffff";
+            
+            // Animação de confete
+            createConfetti();
+        }
+        
+        // Permitir Enter para enviar
+        document.getElementById('valorInput').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                hora();
+            }
+        });
+        
+        // Função para criar efeito de confete
+        function createConfetti() {
+            const confettiCount = 100;
+            const container = document.querySelector('.converter-area');
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-20px';
+                confetti.style.opacity = '0.8';
+                confetti.style.zIndex = '100';
+                
+                container.appendChild(confetti);
+                
+                // Animação
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 0.8 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 2000 + Math.random() * 3000,
+                    easing: 'cubic-bezier(0,0.9,0.57,1)'
+                });
+                
+                // Remover após animação
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        function getRandomColor() {
+            const colors = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#073b4c'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Inicializar com um exemplo
+        document.getElementById('valorInput').value = "3665";
+        hora();
+    </script>
+</body>
+</html>
